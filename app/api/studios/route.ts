@@ -57,10 +57,13 @@ export async function GET(req: NextRequest) {
       .skip((page - 1) * limit);
 
     // Ensure images field is always an array
-    const formattedStudios = studios.map(studio => ({
-      ...studio.toObject(),
-      images: Array.isArray(studio.images) ? studio.images : []
-    }));
+    const formattedStudios = studios.map(studio => {
+      const studioObj = studio.toObject() as any;
+      return {
+        ...studioObj,
+        images: studioObj.images || []
+      };
+    });
 
     // Get total count for pagination
     const totalCount = await Studio.countDocuments(query);
